@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+// automatically generated using https://transform.tools/json-to-go
+// source json:
+// https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
 type EnterpriseAttack struct {
 	Type    string `json:"type"`
 	Objects []struct {
@@ -77,12 +80,10 @@ func main() {
     if reqErr != nil {
         log.Fatal(reqErr)
     }
-
     res, doErr := client.Do(req)
     if doErr != nil {
         log.Fatal(doErr)
     }
-
     if res.Body != nil {
         defer res.Body.Close()
     }
@@ -98,5 +99,18 @@ func main() {
         log.Fatal(jsonErr)
     }
 
-    //fmt.Println(data.Objects[0])    
+    for i := 0; i < len(data.Objects); i += 1 {
+        fmt.Println(data.Objects[i].ExternalReferences)
+    }
+
+    // there is no reason to do it like this
+    // I need the tactics navigator export (prefered in json)
+    // here we have tactics from mitre and our threat intelligence
+    //
+    // 1. read json for threat actor or combined threat actors
+    // 2. get techniques
+    // 3. calc top techniques
+    // 4. check at d3fend for techniques (how?)
+    // 5. get defenses
+    // 6. statistics on defenses (top defense, ...)
 }
