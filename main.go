@@ -113,4 +113,12 @@ func main() {
     // 4. check at d3fend for techniques (how?)
     // 5. get defenses
     // 6. statistics on defenses (top defense, ...)
+    // 
+    // 1: json read
+    // 2: "techniques" field
+    // 3: techniques.score
+    // 4. GET request: https://d3fend.mitre.org/api/offensive-technique/attack/<techniqueID>.json
+    // 5: TODO parsing
+    // 6: TODO statistics
+
 }
