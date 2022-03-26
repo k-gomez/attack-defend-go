@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// rename tool to Ade!
+
 // automatically generated using https://transform.tools/json-to-go
 // source json:
 // https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
@@ -115,6 +117,20 @@ type AdversaryJson struct {
 	TacticRowBackground           string        `json:"tacticRowBackground"`
 	SelectTechniquesAcrossTactics bool          `json:"selectTechniquesAcrossTactics"`
 	SelectSubtechniquesWithParent bool          `json:"selectSubtechniquesWithParent"`
+}
+
+type TopTechniques struct {
+	Technique []struct {
+		TechniqueID string
+		Tactic      string
+		Score       int
+	}
+}
+
+func (aJ *AdversaryJson) GetTopTechniques() TopTechniques {
+	var topTechniques TopTechniques
+
+	return topTechniques
 }
 
 func main() {
