@@ -6,13 +6,13 @@ import (
 	"sort"
 	"time"
 
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
-	"io/ioutil"
-
-	"encoding/json"
-
 	"golang.org/x/exp/slices"
+
+	AdversaryJson "github.com/k-gomez/attack-defend-go/models"
 )
 
 type DefendStruct struct {
@@ -240,7 +240,7 @@ func main() {
 	}
 
 	// Unmarshal the read data and add it to jsonData.
-	var jsonData = AdversaryJson{}
+	var jsonData = AdversaryJson.Adversary{}
 	if jsonDataErr := json.Unmarshal(content, &jsonData); jsonDataErr != nil {
 		log.Fatal(jsonDataErr)
 	}
@@ -249,7 +249,7 @@ func main() {
 	//var topTechniques = TopTechniques{}
 
 	// Sort jsonData based on their scores.
-	sort.Sort(AdversaryJson(jsonData))
+	sort.Sort(AdversaryJson.Adversary(jsonData))
 	var alreadyChecked []string
 	for i := 0; i < len(jsonData.Techniques); i += 1 {
 		if !slices.Contains(alreadyChecked, jsonData.Techniques[i].TechniqueID) {
