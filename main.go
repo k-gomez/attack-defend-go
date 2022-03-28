@@ -1,179 +1,275 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	//"net/http"
-	"golang.org/x/exp/slices"
+	"sort"
 	"time"
+
+	"net/http"
+
+	"io/ioutil"
+
+	"encoding/json"
+
+	"golang.org/x/exp/slices"
 )
 
-// automatically generated using https://transform.tools/json-to-go
-// source json:
-// https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
-type EnterpriseAttack struct {
-	Type    string `json:"type"`
-	Objects []struct {
-		Type                      string    `json:"type"`
-		Modified                  time.Time `json:"modified,omitempty"`
-		Name                      string    `json:"name,omitempty"`
-		XMitreDataSources         []string  `json:"x_mitre_data_sources,omitempty"`
-		XMitreVersion             string    `json:"x_mitre_version,omitempty"`
-		Created                   time.Time `json:"created"`
-		XMitrePermissionsRequired []string  `json:"x_mitre_permissions_required,omitempty"`
-		XMitrePlatforms           []string  `json:"x_mitre_platforms,omitempty"`
-		XMitreIsSubtechnique      bool      `json:"x_mitre_is_subtechnique,omitempty"`
-		ID                        string    `json:"id"`
-		Description               string    `json:"description,omitempty"`
-		ObjectMarkingRefs         []string  `json:"object_marking_refs,omitempty"`
-		KillChainPhases           []struct {
-			KillChainName string `json:"kill_chain_name"`
-			PhaseName     string `json:"phase_name"`
-		} `json:"kill_chain_phases,omitempty"`
-		XMitreDetection    string `json:"x_mitre_detection,omitempty"`
-		CreatedByRef       string `json:"created_by_ref,omitempty"`
-		ExternalReferences []struct {
-			SourceName  string `json:"source_name"`
-			ExternalID  string `json:"external_id,omitempty"`
-			URL         string `json:"url"`
-			Description string `json:"description,omitempty"`
-		} `json:"external_references,omitempty"`
-		XMitreContributors         []string `json:"x_mitre_contributors,omitempty"`
-		XMitreSystemRequirements   []string `json:"x_mitre_system_requirements,omitempty"`
-		XMitreDefenseBypassed      []string `json:"x_mitre_defense_bypassed,omitempty"`
-		XMitreEffectivePermissions []string `json:"x_mitre_effective_permissions,omitempty"`
-		Revoked                    bool     `json:"revoked,omitempty"`
-		XMitreImpactType           []string `json:"x_mitre_impact_type,omitempty"`
-		XMitreNetworkRequirements  bool     `json:"x_mitre_network_requirements,omitempty"`
-		XMitreRemoteSupport        bool     `json:"x_mitre_remote_support,omitempty"`
-		XMitreDeprecated           bool     `json:"x_mitre_deprecated,omitempty"`
-		TargetRef                  string   `json:"target_ref,omitempty"`
-		SourceRef                  string   `json:"source_ref,omitempty"`
-		RelationshipType           string   `json:"relationship_type,omitempty"`
-		XMitreOldAttackID          string   `json:"x_mitre_old_attack_id,omitempty"`
-		IdentityClass              string   `json:"identity_class,omitempty"`
-		Aliases                    []string `json:"aliases,omitempty"`
-		XMitreAliases              []string `json:"x_mitre_aliases,omitempty"`
-		Labels                     []string `json:"labels,omitempty"`
-		XMitreShortname            string   `json:"x_mitre_shortname,omitempty"`
-		TacticRefs                 []string `json:"tactic_refs,omitempty"`
-		XMitreCollectionLayers     []string `json:"x_mitre_collection_layers,omitempty"`
-		XMitreDataSourceRef        string   `json:"x_mitre_data_source_ref,omitempty"`
-		Definition                 struct {
-			Statement string `json:"statement"`
-		} `json:"definition,omitempty"`
-		DefinitionType string `json:"definition_type,omitempty"`
-	} `json:"objects"`
-	ID          string `json:"id"`
-	SpecVersion string `json:"spec_version"`
+type DefendStruct struct {
+	OffToDef struct {
+		Head struct {
+			Vars []string `json:"vars"`
+		} `json:"head"`
+		Results struct {
+			Bindings []struct {
+				Sc struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"sc"`
+				OffArtifactLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_artifact_label"`
+				OffArtifactRelLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_artifact_rel_label"`
+				OffTechLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tech_label"`
+				OffTacticRelLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tactic_rel_label"`
+				OffTacticLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tactic_label"`
+				OffArtifact struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_artifact"`
+				OffArtifactRel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_artifact_rel"`
+				OffTech struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tech"`
+				OffTechID struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tech_id"`
+				OffTacticRel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tactic_rel"`
+				OffTactic struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"off_tactic"`
+				DefTacticLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tactic_label,omitempty"`
+				DefTacticRelLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tactic_rel_label,omitempty"`
+				DefTechParentIsToplevel struct {
+					Datatype string `json:"datatype"`
+					Type     string `json:"type"`
+					Value    string `json:"value"`
+				} `json:"def_tech_parent_is_toplevel,omitempty"`
+				DefTechParentLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tech_parent_label,omitempty"`
+				DefTechLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tech_label,omitempty"`
+				DefArtifactRelLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_artifact_rel_label,omitempty"`
+				DefArtifactLabel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_artifact_label,omitempty"`
+				DefTactic struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tactic,omitempty"`
+				DefTacticRel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tactic_rel,omitempty"`
+				DefTech struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_tech,omitempty"`
+				DefArtifactRel struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_artifact_rel,omitempty"`
+				DefArtifact struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"def_artifact,omitempty"`
+			} `json:"bindings"`
+		} `json:"results"`
+	} `json:"off_to_def"`
+	Description struct {
+		Context struct {
+			D3F      string `json:"d3f"`
+			Rdfs     string `json:"rdfs"`
+			Skos     string `json:"skos"`
+			Owl      string `json:"owl"`
+			Children struct {
+				ID        string `json:"@id"`
+				Type      string `json:"@type"`
+				Container string `json:"@container"`
+			} `json:"children"`
+		} `json:"@context"`
+		Graph []struct {
+			ID          string   `json:"@id"`
+			Type        []string `json:"@type"`
+			D3FAccesses struct {
+				ID string `json:"@id"`
+			} `json:"d3f:accesses"`
+			D3FAttackID    string `json:"d3f:attack-id"`
+			RdfsLabel      string `json:"rdfs:label"`
+			RdfsSubClassOf struct {
+				ID string `json:"@id"`
+			} `json:"rdfs:subClassOf"`
+		} `json:"@graph"`
+	} `json:"description"`
+	Subtechniques struct {
+		Context struct {
+			D3F      string `json:"d3f"`
+			Rdfs     string `json:"rdfs"`
+			Skos     string `json:"skos"`
+			Owl      string `json:"owl"`
+			Children struct {
+				ID        string `json:"@id"`
+				Type      string `json:"@type"`
+				Container string `json:"@container"`
+			} `json:"children"`
+		} `json:"@context"`
+		Graph []struct {
+			ID              string `json:"@id"`
+			D3FD3FAttackID  string `json:"d3f:d3f:attack-id,omitempty"`
+			D3FTopLevel     string `json:"d3f:top-level,omitempty"`
+			RdfsHasSubClass []struct {
+				ID string `json:"@id"`
+			} `json:"rdfs:hasSubClass,omitempty"`
+			RdfsLabel      string `json:"rdfs:label"`
+			D3FAttackID    string `json:"d3f:attack-id,omitempty"`
+			RdfsSubClassOf struct {
+				ID string `json:"@id"`
+			} `json:"rdfs:subClassOf,omitempty"`
+		} `json:"@graph"`
+	} `json:"subtechniques"`
 }
 
-type AdversaryJson struct {
-	Name     string `json:"name"`
-	Versions struct {
-		Attack    string `json:"attack"`
-		Navigator string `json:"navigator"`
-		Layer     string `json:"layer"`
-	} `json:"versions"`
-	Domain      string `json:"domain"`
-	Description string `json:"description"`
-	Filters     struct {
-		Platforms []string `json:"platforms"`
-	} `json:"filters"`
-	Sorting int `json:"sorting"`
-	Layout  struct {
-		Layout              string `json:"layout"`
-		AggregateFunction   string `json:"aggregateFunction"`
-		ShowID              bool   `json:"showID"`
-		ShowName            bool   `json:"showName"`
-		ShowAggregateScores bool   `json:"showAggregateScores"`
-		CountUnscored       bool   `json:"countUnscored"`
-	} `json:"layout"`
-	HideDisabled bool `json:"hideDisabled"`
-	Techniques   []struct {
-		TechniqueID       string        `json:"techniqueID"`
-		Tactic            string        `json:"tactic"`
-		Score             int           `json:"score"`
-		Color             string        `json:"color"`
-		Comment           string        `json:"comment"`
-		Enabled           bool          `json:"enabled"`
-		Metadata          []interface{} `json:"metadata"`
-		Links             []interface{} `json:"links"`
-		ShowSubtechniques bool          `json:"showSubtechniques"`
-	} `json:"techniques"`
-	Gradient struct {
-		Colors   []string `json:"colors"`
-		MinValue int      `json:"minValue"`
-		MaxValue int      `json:"maxValue"`
-	} `json:"gradient"`
-	LegendItems                   []interface{} `json:"legendItems"`
-	Metadata                      []interface{} `json:"metadata"`
-	Links                         []interface{} `json:"links"`
-	ShowTacticRowBackground       bool          `json:"showTacticRowBackground"`
-	TacticRowBackground           string        `json:"tacticRowBackground"`
-	SelectTechniquesAcrossTactics bool          `json:"selectTechniquesAcrossTactics"`
-	SelectSubtechniquesWithParent bool          `json:"selectSubtechniquesWithParent"`
+// httpGetJson returns a DefendStruct for a given JSON URL (endpoint).
+func httpGetJson(endpoint string) DefendStruct {
+	client := http.Client{
+		Timeout: time.Second * 2, // timeout after 2 seconds
+	}
+
+	req, reqErr := http.NewRequest(http.MethodGet, endpoint, nil)
+	if reqErr != nil {
+		log.Fatal(reqErr)
+	}
+	res, doErr := client.Do(req)
+	if doErr != nil {
+		log.Fatal(doErr)
+	}
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		log.Fatal(readErr)
+	}
+
+	defendData := DefendStruct{}
+	jsonErr := json.Unmarshal(body, &defendData)
+	if jsonErr != nil {
+		log.Fatal(jsonErr)
+	}
+
+	return defendData
+}
+
+// Mitigations represents potential defenses for a MITRE ATT&CK technique.
+// It allows to add the mitigation name and the number of occurances in
+// MITRE ATT&CK techniques.
+type Mitigations struct {
+	Name  string
+	Count int
+}
+
+// TopTechniques represents the top techniques for different adversaries.
+// It contains a slice of techniques including their unique ID, MITRE tactic,
+// and score.
+type TopTechniques struct {
+	Techniques []struct {
+		ID     string
+		Tactic string
+		Score  int
+	}
 }
 
 func main() {
-	/*
-	   endpoint := "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json"
+	defendEp := "https://d3fend.mitre.org/api/offensive-technique/attack/"
+	defendEp = "https://d3fend.mitre.org/api/offensive-technique/attack/T1003.json"
 
-	   client := http.Client {
-	       Timeout: time.Second * 2, // timeout after 2 seconds
-	   }
+	// Get JSON data from an URL and add it to a struct.
+	defendData := httpGetJson(defendEp)
 
-	   req, reqErr := http.NewRequest(http.MethodGet, endpoint, nil)
-	   if reqErr != nil {
-	       log.Fatal(reqErr)
-	   }
-	   res, doErr := client.Do(req)
-	   if doErr != nil {
-	       log.Fatal(doErr)
-	   }
-	   if res.Body != nil {
-	       defer res.Body.Close()
-	   }
-
-	   stix, readErr := ioutil.ReadAll(res.Body)
-	   if readErr != nil {
-	       log.Fatal(readErr)
-	   }
-
-	   data := EnterpriseAttack {}
-	   jsonErr := json.Unmarshal(stix, &data)
-	   if jsonErr != nil {
-	       log.Fatal(jsonErr)
-	   }
-	*/
-
+	// Read adverary data from a JSON file.
 	content, rfErr := ioutil.ReadFile("./apt32-winnti-turla.json")
 	if rfErr != nil {
 		log.Fatal(rfErr)
 	}
 
-	jsonData := AdversaryJson{}
-	jsonDataErr := json.Unmarshal(content, &jsonData)
-	if jsonDataErr != nil {
+	// Unmarshal the read data and add it to jsonData.
+	var jsonData = AdversaryJson{}
+	if jsonDataErr := json.Unmarshal(content, &jsonData); jsonDataErr != nil {
 		log.Fatal(jsonDataErr)
 	}
 
+	mitigations := make([]Mitigations, len(defendData.OffToDef.Results.Bindings))
+	//var topTechniques = TopTechniques{}
+
+	// Sort jsonData based on their scores.
+	sort.Sort(AdversaryJson(jsonData))
 	var alreadyChecked []string
 	for i := 0; i < len(jsonData.Techniques); i += 1 {
 		if !slices.Contains(alreadyChecked, jsonData.Techniques[i].TechniqueID) {
-			fmt.Printf("ID: %s \t Score: %d\n", jsonData.Techniques[i].TechniqueID,
-				jsonData.Techniques[i].Score)
+			//fmt.Printf("ID: %s \t Score: %d\n", jsonData.Techniques[i].TechniqueID,
+			//	jsonData.Techniques[i].Score)
 			alreadyChecked = append(alreadyChecked, jsonData.Techniques[i].TechniqueID)
 		}
 	}
-	fmt.Printf("Found %d duplicates.\n", len(alreadyChecked))
 
-	// there is no reason to do it like this
-	// I need the tactics navigator export (prefered in json)
-	// here we have tactics from mitre and our threat intelligence
-	//
+	/*
+		for j := 0; j < len(defendData.OffToDef.Results.Bindings); j += 1 {
+			// only add if name is not already there
+			mitigations[j].Name = defendData.OffToDef.Results.Bindings[j].DefTechLabel.Value
+		}
+	*/
+	fmt.Println(mitigations[1])
+	// DefTechLabel
+
+	//fmt.Printf("Found %d duplicates.\n", len(alreadyChecked))
+
 	// 1. read json for threat actor or combined threat actors
 	// 2. get techniques
 	// 3. calc top techniques
