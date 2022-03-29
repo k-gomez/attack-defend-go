@@ -1,4 +1,4 @@
-package models
+package mitre_attack
 
 import "fmt"
 
@@ -9,7 +9,7 @@ func init() {
 // AdversaryJson represents data collected from MITRE ATT&CK navigator exports.
 // The input file is JSON and hold different information on adversaries.
 // This struct is automatically generated using https://transform.tools/json-to-go
-type Adversary struct {
+type AdversaryJson struct {
 	Name     string `json:"name"`
 	Versions struct {
 		Attack    string `json:"attack"`
@@ -56,18 +56,18 @@ type Adversary struct {
 	SelectSubtechniquesWithParent bool          `json:"selectSubtechniquesWithParent"`
 }
 
-// Method that returns the number of techniques in the AdversaryJson struct.
-func (a Adversary) Len() int {
+// Len returns the number of techniques in the AdversaryJson struct.
+func (a AdversaryJson) Len() int {
 	return len(a.Techniques)
 }
 
-// Method that returns a boolean if the score of technique i is
-// less than the score of technique j
-func (a Adversary) Less(i, j int) bool {
+// Less returns a boolean if the score of technique i is smaller than
+// the score of technique j.
+func (a AdversaryJson) Less(i, j int) bool {
 	return a.Techniques[i].Score > a.Techniques[j].Score
 }
 
 // Method to swap technique i and j based on their score.
-func (a Adversary) Swap(i, j int) {
+func (a AdversaryJson) Swap(i, j int) {
 	a.Techniques[i], a.Techniques[j] = a.Techniques[j], a.Techniques[i]
 }
