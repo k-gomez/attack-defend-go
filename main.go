@@ -17,7 +17,7 @@ import (
 )
 
 // httpGetJson returns a DefendStruct for a given JSON URL (endpoint).
-func httpGetJson(endpoint string) Defend.DefendJson {
+func httpGetJson(endpoint string) *Defend.DefendJson {
 	client := http.Client{
 		Timeout: time.Second * 2, // timeout after 2 seconds
 	}
@@ -43,19 +43,26 @@ func httpGetJson(endpoint string) Defend.DefendJson {
 	jsonErr := json.Unmarshal(body, &defendData)
 	if jsonErr != nil {
 		//log.Fatalf("Unmarshal error. Error message: \n%s", jsonErr)
-		fmt.Printf("Unmarshal error. Error message: \n%s", jsonErr)
+		fmt.Errorf("Unmarshal error. Error message: \n%s", jsonErr)
+		return nil
 	}
 
-	return defendData
+	return &defendData
 }
 
-// Mitigations represents potential defenses for a MITRE ATT&CK technique.
+// Mitigation represents potential defenses for a MITRE ATT&CK technique.
 // It allows to add the mitigation name and the number of occurances in
 // MITRE ATT&CK techniques.
-type Mitigations struct {
-	Name  string
-	Count int
+type Mitigation struct {
+	Key   string
+	Value int
 }
+
+type MitigationList []Mitigation
+
+func (p MitigationList) Len() int           { return len(p) }
+func (p MitigationList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p MitigationList) Less(i, j int) bool { return p[i].Value < p[j].Value }
 
 // TopTechniques represents the top techniques for different adversaries.
 // It contains a slice of techniques including their unique ID, MITRE tactic,
@@ -76,72 +83,56 @@ func main() {
 	}
 
 	// Unmarshal the read data and add it to jsonData.
-	var jsonData = Adversary.AdversaryJson{}
-	if jsonDataErr := json.Unmarshal(content, &jsonData); jsonDataErr != nil {
-		log.Fatal(jsonDataErr)
+	var adversaryJson = Adversary.AdversaryJson{}
+	if adversaryJsonErr := json.Unmarshal(content, &adversaryJson); adversaryJsonErr != nil {
+		log.Fatal(adversaryJsonErr)
 	}
 
 	// Sort jsonData based on their scores.
-	sort.Sort(Adversary.AdversaryJson(jsonData))
-	var alreadyChecked []string
-	for i := 0; i < len(jsonData.Techniques); i += 1 {
-		if !slices.Contains(alreadyChecked, jsonData.Techniques[i].TechniqueID) {
-			//fmt.Printf("ID: %s \t Score: %d\n", jsonData.Techniques[i].TechniqueID,
-			//	jsonData.Techniques[i].Score)
-			alreadyChecked = append(alreadyChecked, jsonData.Techniques[i].TechniqueID)
-		} // alreadyChecked now contains the uniuqe techniques in the JSON
+	sort.Sort(Adversary.AdversaryJson(adversaryJson))
+	fmt.Printf("Collected %d techniques from file.\n",
+		len(adversaryJson.Techniques))
+
+	// Get unique techniques.
+	var uniqueTechniques []string
+	for i := 0; i < len(adversaryJson.Techniques); i += 1 {
+		if !slices.Contains(uniqueTechniques, adversaryJson.Techniques[i].TechniqueID) {
+			uniqueTechniques = append(uniqueTechniques,
+				adversaryJson.Techniques[i].TechniqueID)
+		}
 	}
-	sort.Sort(sort.Reverse(sort.StringSlice(alreadyChecked)))
-	//fmt.Println(alreadyChecked)
+	sort.Sort(sort.Reverse(sort.StringSlice(uniqueTechniques)))
+	fmt.Printf("Got %d unique techniques.\n", len(uniqueTechniques))
 
 	defendEp := "https://d3fend.mitre.org/api/offensive-technique/attack/"
-	var mitigations []string
+	var mitigations = make(map[string]int)
 
-	for j := 0; j < len(alreadyChecked); j += 1 {
-		techniqueLink := defendEp + alreadyChecked[j] + ".json"
-		//fmt.Println(techniqueLink)
+	// Go over all unique techniques and
+	// collect JSON from D3FEND's endpoint.
+	for j := 0; j < len(uniqueTechniques); j += 1 {
+		techniqueLink := defendEp + uniqueTechniques[j] + ".json"
 
 		defendData := httpGetJson(techniqueLink)
 
-		for jj := 0; jj < len(defendData.OffToDef.Results.Bindings); jj += 1 {
-			//fmt.Println(defendData.OffToDef.Results.Bindings[jj].DefTechLabel.Value)
-			mitigations = append(mitigations,
-				defendData.OffToDef.Results.Bindings[jj].DefTechLabel.Value)
+		if defendData != nil {
+			for jj := 0; jj < len(defendData.OffToDef.Results.Bindings); jj += 1 {
+				mitigations[defendData.OffToDef.Results.Bindings[jj].
+					DefTechLabel.Value] += 1
+			}
 		}
 	}
-	fmt.Println(mitigations)
 
-	//mitigations := make([]Mitigations, len(defendData.OffToDef.Results.Bindings))
+	m := make(MitigationList, len(mitigations))
 
-	// testing
-	//defendEp = "https://d3fend.mitre.org/api/offensive-technique/attack/T1003.json"
+	i := 0
+	for k, v := range mitigations {
+		m[i] = Mitigation{k, v}
+		i++
+	}
+	sort.Sort(m)
+	fmt.Println(m)
 
-	// Get JSON data from an URL and add it to a struct.
-
-	//var topTechniques = TopTechniques{}
-
-	/*
-		for j := 0; j < len(defendData.OffToDef.Results.Bindings); j += 1 {
-			// only add if name is not already there
-			mitigations[j].Name = defendData.OffToDef.Results.Bindings[j].DefTechLabel.Value
-		}
-	*/
-	//fmt.Println(mitigations[1])
-	// DefTechLabel
-
-	//fmt.Printf("Found %d duplicates.\n", len(alreadyChecked))
-
-	// 1. read json for threat actor or combined threat actors
-	// 2. get techniques
-	// 3. calc top techniques
-	// 4. check at d3fend for techniques (how?)
-	// 5. get defenses
-	// 6. statistics on defenses (top defense, ...)
-	//
-	// 1: json read
-	// 2: "techniques" field
-	// 3: techniques.score
-	// 4. GET request: https://d3fend.mitre.org/api/offensive-technique/attack/<techniqueID>.json
-	// 5: TODO parsing
-	// 6: TODO statistics
+	for mitig := range m {
+		fmt.Println(m[mitig])
+	}
 }
