@@ -1,0 +1,77 @@
+{Decoy Session Token 2}
+{Authorization Event Thresholding 8}
+{Job Function Access Pattern Analysis 8}
+{Bootloader Authentication 12}
+{DNS Denylisting 12}
+{Firmware Behavior Analysis 12}
+{DNS Allowlisting 12}
+{System Daemon Monitoring 12}
+{Database Query String Analysis 12}
+{Forward Resolution Domain Denylisting 12}
+{Firmware Embedded Monitoring Code 12}
+{System Init Config Analysis 12}
+{Scheduled Job Analysis 12}
+{RPC Traffic Analysis 12}
+{File Creation Analysis 12}
+{DNS Traffic Analysis 12}
+{Firmware Verification 12}
+{Reverse Resolution IP Denylisting 12}
+{Sender MTA Reputation Analysis 24}
+{Decoy Network Resource 24}
+{Domain Account Monitoring 24}
+{Input Device Analysis 24}
+{IO Port Restriction 24}
+{Local Account Monitoring 24}
+{File Carving 24}
+{Administrative Network Activity Analysis 24}
+{Sender Reputation Analysis 24}
+{Certificate Analysis 27}
+{Authentication Event Thresholding 32}
+{Process Code Segment Verification 36}
+{Memory Boundary Tracking 36}
+{URL Analysis 36}
+{Inbound Session Volume Analysis 36}
+{Shadow Stack Comparisons 36}
+{Stack Frame Canary Validation 36}
+{System File Analysis 36}
+{Session Duration Analysis 40}
+{Resource Access Pattern Analysis 40}
+{Service Binary Verification 40}
+{Credential Compromise Scope Analysis 53}
+{Decoy User Credential 53}
+{Authentication Cache Invalidation 53}
+{Credential Transmission Scoping 53}
+{User Account Permissions 60}
+{Process Lineage Analysis 60}
+{Process Self-Modification Detection 60}
+{System Call Filtering 60}
+{Hardware-based Process Isolation 60}
+{Homoglyph Detection 60}
+{Multi-factor Authentication 60}
+{System Call Analysis 60}
+{Mandatory Access Control 60}
+{Account Locking 60}
+{Strong Password Policy 60}
+{Process Termination 60}
+{One-time Password 60}
+{Connection Attempt Analysis 62}
+{Process Segment Execution Prevention 72}
+{Segment Address Offset Randomization 72}
+{Executable Denylisting 84}
+{Process Spawn Analysis 84}
+{Executable Allowlisting 84}
+{Software Update 88}
+{Dynamic Analysis 108}
+{Emulated File Analysis 108}
+{Relay Pattern Analysis 161}
+{User Geolocation Logon Pattern Analysis 310}
+{Per Host Download-Upload Ratio Analysis 310}
+{Remote Terminal Session Detection 310}
+{Network Traffic Community Deviation 310}
+{Inbound Traffic Filtering 310}
+{Protocol Metadata Anomaly Detection 310}
+{Client-server Payload Profiling 310}
+{Outbound Traffic Filtering 310}
+{Decoy File 363}
+{File Analysis 363}
+{Local File Permissions 363}
