@@ -1,0 +1,75 @@
+{Job Function Access Pattern Analysis 8}
+{Authorization Event Thresholding 8}
+{DNS Denylisting 12}
+{System Init Config Analysis 12}
+{IO Port Restriction 12}
+{Database Query String Analysis 12}
+{System Daemon Monitoring 12}
+{Firmware Verification 12}
+{File Creation Analysis 12}
+{Reverse Resolution IP Denylisting 12}
+{Input Device Analysis 12}
+{DNS Traffic Analysis 12}
+{Firmware Embedded Monitoring Code 12}
+{Firmware Behavior Analysis 12}
+{Scheduled Job Analysis 12}
+{Bootloader Authentication 12}
+{Forward Resolution Domain Denylisting 12}
+{DNS Allowlisting 12}
+{Sender MTA Reputation Analysis 24}
+{Memory Boundary Tracking 24}
+{File Carving 24}
+{Local Account Monitoring 24}
+{Stack Frame Canary Validation 24}
+{Sender Reputation Analysis 24}
+{Shadow Stack Comparisons 24}
+{Decoy Network Resource 24}
+{Process Code Segment Verification 24}
+{Service Binary Verification 28}
+{Authentication Event Thresholding 32}
+{System File Analysis 36}
+{Inbound Session Volume Analysis 36}
+{Administrative Network Activity Analysis 36}
+{Certificate Analysis 39}
+{Resource Access Pattern Analysis 40}
+{Session Duration Analysis 40}
+{Process Segment Execution Prevention 48}
+{Domain Account Monitoring 48}
+{System Call Filtering 48}
+{Hardware-based Process Isolation 48}
+{Process Self-Modification Detection 48}
+{Segment Address Offset Randomization 48}
+{Mandatory Access Control 48}
+{System Call Analysis 48}
+{URL Analysis 48}
+{Process Lineage Analysis 48}
+{Process Termination 48}
+{Connection Attempt Analysis 49}
+{Credential Compromise Scope Analysis 63}
+{Credential Transmission Scoping 63}
+{Authentication Cache Invalidation 63}
+{Decoy User Credential 63}
+{Software Update 64}
+{Process Spawn Analysis 72}
+{Homoglyph Detection 72}
+{Strong Password Policy 96}
+{User Account Permissions 96}
+{Executable Allowlisting 96}
+{Executable Denylisting 96}
+{Account Locking 96}
+{One-time Password 96}
+{Multi-factor Authentication 96}
+{Dynamic Analysis 120}
+{Emulated File Analysis 120}
+{Relay Pattern Analysis 197}
+{Protocol Metadata Anomaly Detection 307}
+{User Geolocation Logon Pattern Analysis 307}
+{Outbound Traffic Filtering 307}
+{Client-server Payload Profiling 307}
+{Inbound Traffic Filtering 307}
+{Per Host Download-Upload Ratio Analysis 307}
+{Network Traffic Community Deviation 307}
+{Remote Terminal Session Detection 307}
+{File Analysis 412}
+{Decoy File 412}
+{Local File Permissions 412}

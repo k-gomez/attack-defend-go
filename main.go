@@ -77,7 +77,7 @@ type TopTechniques struct {
 
 func main() {
 	// Read adverary data from a JSON file.
-	content, rfErr := ioutil.ReadFile("./apt32-winnti-turla.json")
+	content, rfErr := ioutil.ReadFile("./apt41-fin6-apt3-apt32-winnti.json")
 	if rfErr != nil {
 		log.Fatal(rfErr)
 	}
@@ -130,9 +130,12 @@ func main() {
 		i++
 	}
 	sort.Sort(m)
-	fmt.Println(m)
+	//fmt.Println(m)
 
+	sum := 0
 	for mitig := range m {
 		fmt.Println(m[mitig])
+		sum += m[mitig].Value
 	}
+	fmt.Printf("Sum: %d", sum)
 }
